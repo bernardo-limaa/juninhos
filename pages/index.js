@@ -14,7 +14,7 @@ export default function Home() {
     "#FFFFFF",
     "#FFFFFF",
     "#FFFFFF",
-    "#FFFFFF"
+    "#00CED1"
   ];
 
   const startMusic = () => {
@@ -79,7 +79,7 @@ export default function Home() {
       width: '100%',
       position: 'relative',
       color: textColor,
-      overflow: 'hidden'
+      
     }}>
       {/* Cursor */}
       <div ref={cursorRef} className="cursor"></div>
