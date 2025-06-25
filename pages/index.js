@@ -9,12 +9,12 @@ export default function Home() {
   const [sparkles, setSparkles] = useState([]);
 
   const colors = [
-    "#FFD700",
-    "#FF8C00",
-    "#FF4500",
-    "#FB68EE",
-    "#FF69B4",
-    "#00CED1"
+    "#FFFFFF",
+    "#FFFFFF",
+    "#FFFFFF",
+    "#FFFFFF",
+    "#FFFFFF",
+    "#FFFFFF"
   ];
 
   const startMusic = () => {
