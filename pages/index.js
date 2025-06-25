@@ -128,7 +128,16 @@ export default function Home() {
         zIndex: -1
       }}></div>
 
-      {/* CSS */}
+      {/* CSS Global + Local */}
+      <style jsx global>{`
+        body {
+          cursor: none;
+          overflow: hidden;
+          margin: 0;
+          padding: 0;
+        }
+      `}</style>
+
       <style jsx>{`
         .cursor-trail {
           position: fixed;
@@ -157,11 +166,6 @@ export default function Home() {
             opacity: 0;
             transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0);
           }
-        }
-
-        body {
-          cursor: none;
-          overflow: hidden;
         }
 
         @font-face {
