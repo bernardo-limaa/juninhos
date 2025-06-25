@@ -1,21 +1,10 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 
 export default function Home() {
   const audioRef = useRef(null);
-  const cursorRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [sparkles, setSparkles] = useState([]);
-
-  const colors = [
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF",
-    "#FFFFFF",
-    "#00CED1"
-  ];
 
   const startMusic = () => {
     if (audioRef.current) {
@@ -25,49 +14,6 @@ export default function Home() {
     }
   };
 
-  const createSparkle = (x, y) => {
-    const id = Date.now() + Math.random();
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const size = Math.random() * 15 + 5;
-    const angle = Math.random() * Math.PI * 2;
-    const distance = Math.random() * 50 + 10;
-
-    const sparkle = { id, x, y, color, size, angle, distance };
-    setSparkles((prev) => [...prev, sparkle]);
-
-    setTimeout(() => {
-      setSparkles((prev) => prev.filter((s) => s.id !== id));
-    }, 1000);
-  };
-
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (cursorRef.current) {
-        cursorRef.current.style.left = `${e.clientX}px`;
-        cursorRef.current.style.top = `${e.clientY}px`;
-      }
-      createSparkle(e.clientX, e.clientY);
-    };
-
-    const handleTouchMove = (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      if (cursorRef.current) {
-        cursorRef.current.style.left = `${touch.clientX}px`;
-        cursorRef.current.style.top = `${touch.clientY}px`;
-      }
-      createSparkle(touch.clientX, touch.clientY);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, []);
-
   const textColor = isDarkMode ? '#ffffff' : '#000000';
   const secondaryColor = isDarkMode ? '#f0f0f0' : '#333333';
   const buttonBg = isDarkMode ? '#ffffff' : '#000000';
@@ -76,34 +22,14 @@ export default function Home() {
   return (
     <div style={{
       minHeight: '100vh',
-      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
       position: 'relative',
       color: textColor,
-      
+      overflow: 'hidden'
     }}>
-      {/* Cursor */}
-      <div ref={cursorRef} className="cursor"></div>
-
-      {/* Sparkles */}
-      {sparkles.map((sparkle) => (
-        <div
-          key={sparkle.id}
-          className="cursor-trail"
-          style={{
-            left: `${sparkle.x}px`,
-            top: `${sparkle.y}px`,
-            width: `${sparkle.size}px`,
-            height: `${sparkle.size}px`,
-            backgroundColor: sparkle.color,
-            boxShadow: `0 0 10px ${sparkle.color}`,
-            animation: `sparkleMove 1s forwards cubic-bezier(0.4, 0, 0.2, 1)`,
-            '--dx': `${Math.cos(sparkle.angle) * sparkle.distance}px`,
-            '--dy': `${Math.sin(sparkle.angle) * sparkle.distance}px`
-          }}
-        ></div>
-      ))}
-
-      {/* Background */}
+      {/* Background Image */}
       <div style={{
         position: 'fixed',
         top: 0,
@@ -123,51 +49,13 @@ export default function Home() {
         left: 0,
         width: '100%',
         height: '100%',
-        backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.3)',
-        backdropFilter: 'blur(2px)',
+        backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.3)', // Filtros leves
+        backdropFilter: 'blur(2px)', // Suaviza o fundo sem apagar a imagem
         zIndex: -1
       }}></div>
 
-      {/* CSS Global + Local */}
-      <style jsx global>{`
-        body {
-          cursor: none;
-          overflow: hidden;
-          margin: 0;
-          padding: 0;
-        }
-      `}</style>
-
+      {/* Importação das fontes */}
       <style jsx>{`
-        .cursor-trail {
-          position: fixed;
-          pointer-events: none;
-          border-radius: 50%;
-          transform: translate(-50%, -50%);
-        }
-
-        .cursor {
-          position: fixed;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background-color: rgba(255, 255, 255, 0.5);
-          transform: translate(-50%, -50%);
-          pointer-events: none;
-          z-index: 10;
-        }
-
-        @keyframes sparkleMove {
-          0% {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-          }
-          100% {
-            opacity: 0;
-            transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0);
-          }
-        }
-
         @font-face {
           font-family: 'FFSymbols';
           src: url('/fonts/FFSymbols.ttf') format('truetype');
@@ -205,13 +93,13 @@ export default function Home() {
         }
       `}</style>
 
-      {/* Audio */}
+      {/* Música */}
       <audio ref={audioRef} loop>
         <source src="/musiquinha.mp3" type="audio/mpeg" />
         Seu navegador não suporta áudio.
       </audio>
 
-      {/* Overlay Inicial */}
+      {/* Tela de Bloqueio */}
       {showOverlay && (
         <div style={{
           position: 'fixed',
@@ -247,7 +135,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Botão Dark Mode */}
+      {/* Botão de Dark Mode */}
       <button style={{
         position: 'fixed',
         top: '20px',
